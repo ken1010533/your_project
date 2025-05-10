@@ -12,3 +12,4 @@ if __name__ == "__main__":
         print("發生錯誤：", e)
         traceback.print_exc()
         input("按下 Enter 鍵以結束...")
+ 
