@@ -4,7 +4,7 @@ from .utils import 判斷公司類型, 提取縣市
 def 分析Excel文件(filepath):
     資料框架 = pd.read_excel(filepath)
     
-    # 檢查必要欄位
+    # 檢查必要欄位 
     必要欄位 = ["公司名稱", "公司地址", "統一編號"]
     for 欄位 in 必要欄位:
         if 欄位 not in 資料框架.columns:

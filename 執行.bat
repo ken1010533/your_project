@@ -7,4 +7,4 @@ if %errorLevel% neq 0 (
     exit /b
 )
 
-python main.py
+python main.py 

@@ -9,7 +9,7 @@ def 判斷公司類型(名稱):
     if "公司" in 名稱:
         return "公司"
     elif "社" in 名稱:
-        return "社"
+        return "社" 
     elif "行" in 名稱:
         return "行"
     elif "廠" in 名稱:

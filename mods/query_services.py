@@ -23,7 +23,7 @@ def 查詢公司資料(公司列表, text_callback=None):
         設定 = 讀取設定()
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
-  
+   
         try:
             回應 = requests.get(網址, timeout=10)
             if 回應.status_code == 200:

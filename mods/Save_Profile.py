@@ -12,7 +12,7 @@ def 讀取設定():
             return json.load(f)
     except json.JSONDecodeError:
         return {}  # JSON 解析失敗時回傳空字典
-
+ 
 # 寫入設定
 def 寫入設定(**kwargs):
     設定 = 讀取設定()

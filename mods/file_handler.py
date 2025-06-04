@@ -15,7 +15,7 @@ def 保存結果到檔案(資料框架, 查詢結果, 文件路徑, 輸出詳細
                 "企業社商行資料": [商行.get("詳細資料", {}) for 商行 in 查詢結果.get("企業社商行資料", [])],
                 "其他資料": 查詢結果.get("其他資料", []),
             }
-            
+             
             with open(文件路徑, "w", encoding="utf-8") as 檔案:
                 json.dump(詳細資料, 檔案, ensure_ascii=False, indent=4)
             return True, f"詳細結果已保存到 {文件路徑}"
