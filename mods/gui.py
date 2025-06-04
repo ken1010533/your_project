@@ -606,7 +606,7 @@ class 公司查詢系統GUI:
             儲存目錄.mkdir(parents=True, exist_ok=True)
             
             # 生成帶時間戳的檔案名稱
-            時間戳 = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            時間戳 = datetime.datetime.now().strftime("%H%M%S")
             檔案名稱 = f"查詢結果_{時間戳}.xlsx"
             路徑 = 儲存目錄 / 檔案名稱
             
