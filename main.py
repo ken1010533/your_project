@@ -2,7 +2,7 @@ import tkinter as tk
 from mods.gui import 公司查詢系統GUI
 
     
-if __name__ == "__main__":
+if __name__ == "__main__":        
     try:
         root = tk.Tk()
         app = 公司查詢系統GUI(root)
