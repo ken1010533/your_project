@@ -8,7 +8,7 @@ from .Save_Profile import 讀取設定
 時間延遲 = 設定.get("時間延遲", 1)
 print("時間延遲:", 時間延遲)
 暫停查詢=設定.get("暫停",1)
-if 暫停查詢==1:
+if 暫停查詢==0:
     print("停用查詢")
 else:
     print("啟用查詢")
@@ -28,12 +28,13 @@ def 查詢公司資料(公司列表, text_callback=None):
                 text_callback(f"⚠️ {名稱} 缺少統一編號，跳過查詢\n")
             continue
         設定 = 讀取設定()
-        網址 = f"https://data.gcis.nat.gov.tw/od/data/api/5F64D864-61CB-4D0D-8AD9-492047CC1EA6?$format=json&$filter=Business_Accounting_NO eq {str(int(float(統編)))}"
+        統一格式統編=str(int(float(統編))).zfill(8)
+        網址 = f"https://data.gcis.nat.gov.tw/od/data/api/5F64D864-61CB-4D0D-8AD9-492047CC1EA6?$format=json&$filter=Business_Accounting_NO%20eq%20={統一格式統編}"
         設定 = 讀取設定()
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
         if 設定.get("顯示查詢網址",1):
-            print('"'+網址+'"')
+            print(網址)
             設定 = 讀取設定()
         else:
             設定 = 讀取設定()
@@ -100,12 +101,13 @@ def 查詢商行資料(商行列表, 地區代碼表, text_callback=None):
             continue
         
         地區代碼 = 地區代碼表.get(縣市, "376430000A")
-        網址 = f"https://data.gcis.nat.gov.tw/od/data/api/7E6AFA72-AD6A-46D3-8681-ED77951D912D?$format=json&$filter=President_No eq {統編} and Agency eq {地區代碼}&$skip=0&$top=50"
+        統一格式統編=str(int(float(統編))).zfill(8)
+        網址 = f"https://data.gcis.nat.gov.tw/od/data/api/7E6AFA72-AD6A-46D3-8681-ED77951D912D?$format=json&$filter=President_No%20eq%20'{統一格式統編}'%20and%20Agency%20eq%20{地區代碼}&$skip=0&$top=50"
         設定 = 讀取設定()
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
         if 設定.get("顯示查詢網址",1):
-            print('"'+網址+'"')
+            print(網址)
             設定 = 讀取設定()
         else:
             設定 = 讀取設定()

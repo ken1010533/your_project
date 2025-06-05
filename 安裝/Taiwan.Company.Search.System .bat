@@ -8,6 +8,12 @@ if %errorLevel% neq 0 (
     exit /b
 )
 
+:: --- 輸入自訂資料夾名稱 ---
+set /p FOLDER_NAME=請輸入要下載的資料夾名稱（預設為 your_project）：
+if "%FOLDER_NAME%"=="" (
+    set "FOLDER_NAME=your_project"
+)
+
 :: --- 安裝 Python ---
 python --version >nul 2>&1
 if errorlevel 1 (
@@ -34,11 +40,11 @@ echo 🔄 正在安裝 Python 套件：pandas、openpyxl、requests...
 python -m pip install --upgrade pip
 python -m pip install pandas openpyxl requests
 
-:: --- 設定專案資料夾為此批次檔所在位置 ---
-set "TARGET_DIR=%~dp0your_project"
+:: --- 設定下載路徑為目前資料夾 + 使用者自訂名稱 ---
+set "TARGET_DIR=%~dp0%FOLDER_NAME%"
 
 if exist "%TARGET_DIR%" (
-    echo 📂 專案資料夾已存在，略過 git clone。
+    echo 📂 資料夾 %FOLDER_NAME% 已存在，略過 git clone。
 ) else (
     echo ⬇️ 正在下載專案至：%TARGET_DIR% ...
     git clone https://github.com/ken1010533/your_project.git "%TARGET_DIR%"
@@ -52,4 +58,5 @@ if exist "%TARGET_DIR%" (
 git config --global --add safe.directory "%TARGET_DIR%"
 echo ✅ 已將 %TARGET_DIR% 加入 Git 安全白名單
 
-echo 🟢 全部安裝與設定完成！可以開始使用專案囉 🎉
+echo 🟢 全部安裝與設定完成！可以開始使用你的專案囉 🎉
+
