@@ -11,6 +11,7 @@ import threading
 from tkinter import ttk
 from pathlib import Path 
 from .Windows_to_Middle_Module import 主視窗至中
+import os
 class 公司查詢系統GUI:
     # 地區代碼對照表
     地區代碼表 = {
@@ -131,7 +132,7 @@ class 公司查詢系統GUI:
         self.暫停按鈕=tk.Button(按鈕框架, text="暫停",command=self.暫停 )
         self.暫停按鈕.pack(side="left", padx=5)
         self.暫停()
-        tk.Button(按鈕框架, text="退出", command=self.根視窗.quit).pack(side="left", padx=5)
+        tk.Button(按鈕框架, text="退出", command=self.安全退出).pack(side="left", padx=5)
 
 
 
@@ -792,7 +793,9 @@ class 公司查詢系統GUI:
         else:
             self.暫停按鈕.config(text="開始")
 
-
+    def 安全退出(self):
+        self.設定功能區()  # 保存当前设置
+        os._exit(0)
 
 
 
