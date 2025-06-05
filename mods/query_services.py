@@ -24,15 +24,16 @@ def 查詢公司資料(公司列表, text_callback=None):
             if text_callback:
                 text_callback(f"⚠️ {名稱} 缺少統一編號，跳過查詢\n")
             continue
-        
+        設定 = 讀取設定()
         網址 = f"https://data.gcis.nat.gov.tw/od/data/api/5F64D864-61CB-4D0D-8AD9-492047CC1EA6?$format=json&$filter=Business_Accounting_NO eq {str(int(float(統編)))}"
         設定 = 讀取設定()
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
         if 設定.get("顯示查詢網址",1):
             print(網址)
+            設定 = 讀取設定()
         else:
-            pass
+            設定 = 讀取設定()
 
         try:
             回應 = requests.get(網址, timeout=10)
@@ -84,7 +85,11 @@ def 查詢商行資料(商行列表, 地區代碼表, text_callback=None):
     結果 = []
     設定 = 讀取設定()
     顯示查詢網址 = 設定.get("顯示查詢網址", 0)  # 從設定取得顯示網址選項
-    
+    顯示查詢網址 = 設定.get("顯示查詢網址", 0)  # 從設定取得顯示網址選項
+    while 設定.get("暫停",1):
+        設定 = 讀取設定()
+        time.sleep(1)
+        print("暫停中")   
     for 名稱, 縣市, 統編 in 商行列表:
         if not 統編 or pd.isna(統編):
             if text_callback:
@@ -96,7 +101,11 @@ def 查詢商行資料(商行列表, 地區代碼表, text_callback=None):
         設定 = 讀取設定()
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
-        
+        if 設定.get("顯示查詢網址",1):
+            print(網址)
+            設定 = 讀取設定()
+        else:
+            設定 = 讀取設定()
         try:
             回應 = requests.get(網址, timeout=10)
             if 回應.status_code == 200:
