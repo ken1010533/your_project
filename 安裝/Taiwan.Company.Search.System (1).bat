@@ -1,7 +1,6 @@
 chcp 65001
-
 @echo off
-:: 檢查是否有管理員權限
+:: --- 檢查是否有管理員權限 ---
 net session >nul 2>&1
 if %errorLevel% neq 0 (
     echo 需要管理員權限，正在請求提升權限...
@@ -12,45 +11,45 @@ if %errorLevel% neq 0 (
 :: --- 安裝 Python ---
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo Python 未安裝，開始下載安裝 Python...
+    echo Python 未安裝，開始下載並安裝 Python...
     powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.12.3/python-3.12.3-amd64.exe' -OutFile \"$env:TEMP\python-installer.exe\"; Start-Process \"$env:TEMP\python-installer.exe\" -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait; Remove-Item \"$env:TEMP\python-installer.exe\" -Force"
 ) else (
-    echo 已偵測到 Python，版本：
+    echo ✅ 已偵測到 Python，版本為：
     python --version
 )
 
 :: --- 安裝 Git ---
 git --version >nul 2>&1
 if errorlevel 1 (
-    echo Git 未安裝，正在使用 winget 安裝 Git...
+    echo Git 未安裝，正在透過 winget 安裝 Git...
     winget install --id Git.Git -e --source winget
-    :: 添加 Git 到系統路徑
     setx PATH "%PATH%;C:\Program Files\Git\cmd" /M
-    :: 刷新當前會話的環境變量
-    for /f "tokens=2,*" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path ^| findstr /i "Path"') do set "systempath=%%b"
-    set "PATH=%systempath%"
 ) else (
-    echo 已偵測到 Git，版本：
+    echo ✅ 已偵測到 Git，版本為：
     git --version
 )
 
 :: --- 安裝 Python 套件 ---
-echo 正在安裝 pandas openpyxl requests 套件...
+echo 🔄 正在安裝 Python 套件：pandas、openpyxl、requests...
 python -m pip install --upgrade pip
 python -m pip install pandas openpyxl requests
 
 :: --- 設定專案資料夾為此批次檔所在位置 ---
-set TARGET_DIR=%~dp0your_project
+set "TARGET_DIR=%~dp0your_project"
 
 if exist "%TARGET_DIR%" (
-    echo 目標資料夾已存在，跳過 git clone。
+    echo 📂 專案資料夾已存在，略過 git clone。
 ) else (
-    echo 正在下載你的專案到 %TARGET_DIR% ...
+    echo ⬇️ 正在下載專案至：%TARGET_DIR% ...
     git clone https://github.com/ken1010533/your_project.git "%TARGET_DIR%"
     if errorlevel 1 (
-        echo 下載失敗，請手動執行以下命令：
+        echo ❌ Git clone 失敗，請手動執行：
         echo git clone https://github.com/ken1010533/your_project.git "%TARGET_DIR%"
     )
 )
 
-echo 全部安裝與下載完成！
+:: --- 加入 Git 安全資料夾白名單 ---
+git config --global --add safe.directory "%TARGET_DIR%"
+echo ✅ 已將 %TARGET_DIR% 加入 Git 安全白名單
+
+echo 🟢 全部安裝與設定完成！可以開始使用專案囉 🎉
