@@ -47,8 +47,7 @@ class 公司查詢系統GUI:
         self.記住我變數 = tk.IntVar(value=int(self.設定.get("記住我", 0)))
         self.登入帳號 = self.設定.get("使用者名稱", "")
         self.登入密碼 = self.設定.get("密碼", "")
-
-
+        self.暫停參數 =self.設定.get("暫停",0)
 
 
 
@@ -129,8 +128,13 @@ class 公司查詢系統GUI:
         # 修改：保存保存按鈕引用
         self.保存按鈕 = tk.Button(按鈕框架, text="保存結果", command=self.重新儲存)
         self.保存按鈕.pack(side="left", padx=5)
+        self.暫停按鈕=tk.Button(按鈕框架, text="暫停",command=self.暫停 )
+        self.暫停按鈕.pack(side="left", padx=5)
+        self.暫停()
         tk.Button(按鈕框架, text="退出", command=self.根視窗.quit).pack(side="left", padx=5)
-        
+
+
+
         # 結果顯示區
         結果框架 = tk.LabelFrame(查詢系統, text="查詢結果", padx=5, pady=5)
         結果框架.pack(fill="both", expand=True, pady=5)
@@ -744,17 +748,6 @@ class 公司查詢系統GUI:
             command=self.及時寫入設定
         ).pack(pady=5)
 
-
-
-
-
-
-
-
-
-
-
-
     def 嘗試登入(self):
         使用者名稱 = self.使用者名稱輸入框.get()
         密碼 = self.密碼輸入框.get()
@@ -789,10 +782,15 @@ class 公司查詢系統GUI:
         .grid(pady=20, column=0,row=0)
         self.登入狀態變數.set(1)
 # column、row 
-
-
-
-
+    def 暫停(self):
+        self.設定["暫停"] = 0 if self.設定.get("暫停", 0) == 1 else 1
+        self.暫停參數 = self.設定["暫停"]
+        # 假設你有定義這個函式，這裡只是模擬
+        寫入設定(**self.設定)
+        if self.暫停參數 == 0:
+            self.暫停按鈕.config(text="暫停")
+        else:
+            self.暫停按鈕.config(text="開始")
 
 
 

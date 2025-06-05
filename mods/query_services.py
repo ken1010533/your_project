@@ -7,12 +7,18 @@ from .Save_Profile import 讀取設定
 設定 = 讀取設定()
 時間延遲 = 設定.get("時間延遲", 1)
 print("時間延遲:", 時間延遲)
-
+暫停查詢=設定.get("暫停",1)
+print("暫停查詢:", 暫停查詢)
 def 查詢公司資料(公司列表, text_callback=None):
     結果 = []
     設定 = 讀取設定()
     顯示查詢網址 = 設定.get("顯示查詢網址", 0)  # 從設定取得顯示網址選項
-
+    while 設定.get("暫停",1):
+        設定 = 讀取設定()
+        time.sleep(1)
+        print("暫停中")
+    else:
+            pass
     for 名稱, 縣市, 統編 in 公司列表:
         if not 統編 or pd.isna(統編):
             if text_callback:
@@ -23,7 +29,11 @@ def 查詢公司資料(公司列表, text_callback=None):
         設定 = 讀取設定()
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
-   
+        if 設定.get("顯示查詢網址",1):
+            print(網址)
+        else:
+            pass
+
         try:
             回應 = requests.get(網址, timeout=10)
             if 回應.status_code == 200:
