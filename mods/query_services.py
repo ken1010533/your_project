@@ -8,7 +8,10 @@ from .Save_Profile import 讀取設定
 時間延遲 = 設定.get("時間延遲", 1)
 print("時間延遲:", 時間延遲)
 暫停查詢=設定.get("暫停",1)
-print("暫停查詢:", 暫停查詢)
+if 暫停查詢==1:
+    print("停用查詢")
+else:
+    print("啟用查詢")
 def 查詢公司資料(公司列表, text_callback=None):
     結果 = []
     設定 = 讀取設定()
@@ -16,7 +19,7 @@ def 查詢公司資料(公司列表, text_callback=None):
     while 設定.get("暫停",1):
         設定 = 讀取設定()
         time.sleep(1)
-        print("暫停中")
+        print("暫停查詢中")
     else:
             pass
     for 名稱, 縣市, 統編 in 公司列表:
@@ -30,7 +33,7 @@ def 查詢公司資料(公司列表, text_callback=None):
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
         if 設定.get("顯示查詢網址",1):
-            print(網址)
+            print('"'+網址+'"')
             設定 = 讀取設定()
         else:
             設定 = 讀取設定()
@@ -89,7 +92,7 @@ def 查詢商行資料(商行列表, 地區代碼表, text_callback=None):
     while 設定.get("暫停",1):
         設定 = 讀取設定()
         time.sleep(1)
-        print("暫停中")   
+        print("暫停查詢中")   
     for 名稱, 縣市, 統編 in 商行列表:
         if not 統編 or pd.isna(統編):
             if text_callback:
@@ -102,7 +105,7 @@ def 查詢商行資料(商行列表, 地區代碼表, text_callback=None):
         時間延遲 = 設定.get("時間延遲", 1)
         time.sleep(時間延遲)
         if 設定.get("顯示查詢網址",1):
-            print(網址)
+            print('"'+網址+'"')
             設定 = 讀取設定()
         else:
             設定 = 讀取設定()
