@@ -48,7 +48,7 @@ class 公司查詢系統GUI:
         self.記住我變數 = tk.IntVar(value=int(self.設定.get("記住我", 0)))
         self.登入帳號 = self.設定.get("使用者名稱", "")
         self.登入密碼 = self.設定.get("密碼", "")
-        self.暫停參數 =self.設定.get("暫停",1)
+        self.暫停參數 =self.設定.get("暫停",0)
 
 
 
