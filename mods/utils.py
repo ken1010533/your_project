@@ -38,11 +38,12 @@ def 提取縣市(地址):
 
 def 取得營業狀態(狀態):
     if pd.isna(狀態) or 狀態 in ["無資料", None, ""]:
-        return "未知"
+        return "查無結果"
     狀態 = str(狀態).strip()
-    if any(關鍵字 in 狀態 for 關鍵字 in ["營業中", "營運中", "復業","副業副本"]):
-        return "營業中"
-    elif any(關鍵字 in 狀態 for 關鍵字 in ["解散", "廢止", "停業", "撤銷", "歇業", "停業中","停業副本"]):
-        return "非營業中"
-    else:
-        return "未知"
+    return 狀態
+    # if any(關鍵字 in 狀態 for 關鍵字 in ["營業中", "營運中", "復業","副業副本"]):
+    #     return "營業中"
+    # elif any(關鍵字 in 狀態 for 關鍵字 in ["解散", "廢止", "停業", "撤銷", "歇業", "停業中","停業副本"]):
+    #     return "非營業中"
+    # else:
+    #     return "未知"
