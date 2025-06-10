@@ -429,8 +429,8 @@ class 公司查詢系統GUI:
             self.查詢按鈕.config(state=tk.NORMAL)
             self.保存按鈕.config(state=tk.NORMAL)
             self.分析Excel按鈕.config(state=tk.NORMAL)
-            print(self.資料框架["統一編號"].head())
-            print(self.資料框架["統一編號"].apply(lambda x: type(x)).value_counts())
+            # print(self.資料框架["統一編號"].head())
+            # print(self.資料框架["統一編號"].apply(lambda x: type(x)).value_counts())
 
         except Exception as 錯誤:
             messagebox.showerror("錯誤", f"分析Excel時發生錯誤: {str(錯誤)}")
