@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
 import datetime
-# import pandas as pd
+import pandas as pd
 from .excel_parser import 分析Excel文件
 from .query_services import 查詢公司資料, 查詢商行資料
 from .file_handler import 保存結果到檔案 , 詳細保存
@@ -132,8 +132,9 @@ class 公司查詢系統GUI:
         self.暫停按鈕=tk.Button(按鈕框架, text="暫停",command=self.暫停 )
         self.暫停按鈕.pack(side="left", padx=5)
         self.暫停()
-        tk.Button(按鈕框架, text="退出", command=self.安全退出).pack(side="left", padx=5)
 
+        tk.Button(按鈕框架, text="退出", command=self.安全退出).pack(side="left", padx=5)
+        self.暫停()
 
 
         # 結果顯示區
@@ -428,6 +429,9 @@ class 公司查詢系統GUI:
             self.查詢按鈕.config(state=tk.NORMAL)
             self.保存按鈕.config(state=tk.NORMAL)
             self.分析Excel按鈕.config(state=tk.NORMAL)
+            print(self.資料框架["統一編號"].head())
+            print(self.資料框架["統一編號"].apply(lambda x: type(x)).value_counts())
+
         except Exception as 錯誤:
             messagebox.showerror("錯誤", f"分析Excel時發生錯誤: {str(錯誤)}")
             self.狀態變數.set("分析失敗")
@@ -538,22 +542,49 @@ class 公司查詢系統GUI:
 
 
 
-    def 更新營業狀態(self):
-        for 公司 in self.查詢結果["公司資料"]:
-            統編 = str(int(float(公司["統編"]))).zfill(8)
-            掩碼 = self.資料框架["統一編號"].astype(str).str.zfill(8) == 統編
-            print(f"比對統編: {統編}, 匹配數量: {掩碼.sum()}")  # 調試用
-            狀態 = 公司["營業狀態描述"]
-            self.資料框架.loc[掩碼, "是否營業"] = 取得營業狀態(狀態)
-            
-        for 商行 in self.查詢結果["企業社商行資料"]:
-            掩碼 = self.資料框架["統一編號"].astype(str) == str(int(float(商行["統編"]))).zfill(8)
 
-            狀態 = 商行["營業狀態描述"]
-            self.資料框架.loc[掩碼, "是否營業"] = 取得營業狀態(狀態)
-        
-        無結果掩碼 = self.資料框架["是否營業"] == "尚未查詢"
-        self.資料框架.loc[無結果掩碼, "是否營業"] = "查無資料"
+    def 更新營業狀態(self):
+        """
+        修正後的函式：先建立標準化欄位，再進行迴圈比對。
+        """
+        # 步驟 1: 在迴圈開始前，先為整個 DataFrame 建立一個標準化的 '統一編號_str' 欄位
+        # 這個處理可以應對原欄位是數字、浮點數(xxx.0)或文字等情況
+        try:
+            self.資料框架["統一編號_str"] = self.資料框架["統一編號"].astype(float).astype(int).astype(str).str.zfill(8)
+        except (ValueError, TypeError):
+            # 如果主要方法失敗（例如欄位中有非數字文字），則進行備用處理
+            self.資料框架["統一編號_str"] = self.資料框架["統一編號"].astype(str).str.split('.').str[0].str.zfill(8)
+
+        # 步驟 2: 處理公司資料的迴圈
+        for 公司 in self.查詢結果.get("公司資料", []):
+            if not 公司.get("統編") or pd.isna(公司["統編"]):
+                continue
+            
+            # 將查詢結果的統編也標準化
+            統編 = str(int(float(公司["統編"]))).zfill(8)
+            
+            # 使用預先建立好的標準化欄位進行比對
+            掩碼 = self.資料框架["統一編號_str"] == 統編
+            
+            if 掩碼.any(): # 檢查是否有任何一列匹配成功
+                狀態 = 公司.get("營業狀態描述", "查無結果")
+                self.資料框架.loc[掩碼, "是否營業"] = 取得營業狀態(狀態)
+
+        # 步驟 3: 處理商行資料的迴圈 (邏輯相同)
+        for 商行 in self.查詢結果.get("企業社商行資料", []):
+            if not 商行.get("統編") or pd.isna(商行["統編"]):
+                continue
+                
+            統編 = str(int(float(商行["統編"]))).zfill(8)
+            掩碼 = self.資料框架["統一編號_str"] == 統編
+            
+            if 掩碼.any():
+                狀態 = 商行.get("營業狀態描述", "查無結果")
+                self.資料框架.loc[掩碼, "是否營業"] = 取得營業狀態(狀態)
+
+        # 步驟 4 (可選): 刪除臨時用來比對的欄位，讓最終輸出的 Excel 更乾淨
+        if "統一編號_str" in self.資料框架.columns:
+            del self.資料框架["統一編號_str"]
 
 
 
@@ -612,6 +643,8 @@ class 公司查詢系統GUI:
                 if success:
                     self.狀態變數.set(f"詳細結果已自動保存到: {路徑}")
                     messagebox.showinfo("自動保存完成", f"詳細結果已自動保存到:\n{路徑}")
+                   
+
                 else:
                     messagebox.showerror("自動保存失敗", message)
             else:
@@ -811,7 +844,7 @@ class 公司查詢系統GUI:
         self.登入狀態變數.set(1)
 # column、row 
     def 暫停(self):
-        self.設定["暫停"] = 0 if self.設定.get("暫停", 0) == 1 else 1
+        self.設定["暫停"] = 0 if self.設定.get("暫停", 0) == 1 else 1  
         self.暫停參數 = self.設定["暫停"]
         # 假設你有定義這個函式，這裡只是模擬
         寫入設定(**self.設定)

@@ -8,10 +8,7 @@ from .Save_Profile import 讀取設定
 時間延遲 = 設定.get("時間延遲", 1)
 print("時間延遲:", 時間延遲)
 暫停查詢=設定.get("暫停",1)
-if 暫停查詢==0:
-    print("停用查詢")
-else:
-    print("啟用查詢")
+
 def 查詢公司資料(公司列表, text_callback=None):
     結果 = []
     設定 = 讀取設定()
@@ -46,6 +43,7 @@ def 查詢公司資料(公司列表, text_callback=None):
                 if 資料:
                     for 項目 in 資料:
                         營業狀態 = 項目.get("Case_Status_Desc", "無資料") or "無資料"
+                        print(f"統編 {統一格式統編} 的原始營業狀態為：{營業狀態}")
                         資本額 = 項目.get("Paid_In_Capital_Amount", 0)
                         if 資本額 in [None, ""]:
                             資本額 = 0
@@ -118,6 +116,7 @@ def 查詢商行資料(商行列表, 地區代碼表, text_callback=None):
                 if 資料:
                     for 項目 in 資料:
                         營業狀態 = 項目.get("Business_Current_Status_Desc", "無資料") or "無資料"
+                        print(f"統編 {統一格式統編} 的原始營業狀態為：{營業狀態}")
                         資本額 = 項目.get("Business_Register_Funds", 0)
                         if 資本額 in [None, ""]:
                             資本額 = 0
