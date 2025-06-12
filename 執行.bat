@@ -9,16 +9,16 @@ if %errorLevel% neq 0 (
     exit /b
 )
 
-:: 確認 main.py 存在
-if not exist "main.py" (
-    echo 找不到 main.py，請確認當前目錄是否正確！
+:: 確認 執行.py 存在
+if not exist "執行.py" (
+    echo 找不到 執行.py，請確認當前目錄是否正確！
     pause
     exit /b
 )
 
 :: 執行 Python 程式
 echo 正在執行 Python 程式...
-python main.py
+python 執行.py
 if errorlevel 1 (
     echo Python 程式執行失敗，請檢查錯誤訊息。
 ) else (
